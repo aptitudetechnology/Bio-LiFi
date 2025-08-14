@@ -3,22 +3,28 @@ import matplotlib.patches as patches
 import numpy as np
 from matplotlib.patches import FancyBboxPatch, Circle, Rectangle, FancyArrowPatch
 from matplotlib.collections import LineCollection
-import matplotlib.gridspec as gridspec
+import os
 
 # Set style for publication-quality figures
 plt.style.use('default')
-plt.rcParams['figure.figsize'] = (15, 20)
 plt.rcParams['font.size'] = 10
 
-# Create a comprehensive figure with multiple subplots
-fig = plt.figure(figsize=(16, 20))
-gs = gridspec.GridSpec(5, 2, height_ratios=[1, 1, 1, 1, 1], hspace=0.3, wspace=0.2)
+# Create output directory if it doesn't exist
+output_dir = "bio_lifi_diagrams"
+os.makedirs(output_dir, exist_ok=True)
 
-# 1. Bioluminescent Organism Mechanisms (Top Left)
-ax1 = fig.add_subplot(gs[0, 0])
+def save_and_close(filename):
+    """Helper function to save figure and close it"""
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, f"{filename}.png"), dpi=300, bbox_inches='tight')
+    plt.close()
+    print(f"Saved: {filename}.png")
+
+# 1. Bioluminescent Organism Mechanisms
+fig, ax1 = plt.subplots(figsize=(12, 8))
 ax1.set_xlim(0, 10)
 ax1.set_ylim(0, 8)
-ax1.set_title('Bioluminescent Organism Control Mechanisms', fontweight='bold', fontsize=12)
+ax1.set_title('Bioluminescent Organism Control Mechanisms', fontweight='bold', fontsize=14)
 
 # Quorum Sensing Pathway
 qs_box = FancyBboxPatch((0.5, 6), 2, 1.2, boxstyle="round,pad=0.1", 
@@ -63,16 +69,17 @@ for arrow in arrows:
 ax1.set_xticks([])
 ax1.set_yticks([])
 ax1.axis('off')
+save_and_close("01_bioluminescent_control_mechanisms")
 
-# 2. Multi-Wavelength Transmission (Top Right)
-ax2 = fig.add_subplot(gs[0, 1])
+# 2. Multi-Wavelength Transmission
+fig, ax2 = plt.subplots(figsize=(10, 6))
 wavelengths = ['Blue\n(475nm)', 'Green\n(510nm)', 'Yellow\n(575nm)', 'Red\n(650nm)']
 intensities = [85, 92, 78, 88]
 colors = ['blue', 'green', 'yellow', 'red']
 
 bars = ax2.bar(wavelengths, intensities, color=colors, alpha=0.7, edgecolor='black')
 ax2.set_ylabel('Signal Intensity (%)')
-ax2.set_title('Multi-Wavelength Bio-LiFi Channels', fontweight='bold', fontsize=12)
+ax2.set_title('Multi-Wavelength Bio-LiFi Channels', fontweight='bold', fontsize=14)
 ax2.set_ylim(0, 100)
 
 # Add data labels
@@ -81,12 +88,13 @@ for bar, intensity in zip(bars, intensities):
              f'{intensity}%', ha='center', va='bottom', fontweight='bold')
 
 ax2.grid(True, alpha=0.3)
+save_and_close("02_multi_wavelength_channels")
 
-# 3. Retinal Layer Structure (Second Row Left)
-ax3 = fig.add_subplot(gs[1, 0])
+# 3. Retinal Layer Structure
+fig, ax3 = plt.subplots(figsize=(12, 8))
 ax3.set_xlim(0, 10)
 ax3.set_ylim(0, 10)
-ax3.set_title('Biological Photoreceptor Network Structure', fontweight='bold', fontsize=12)
+ax3.set_title('Biological Photoreceptor Network Structure', fontweight='bold', fontsize=14)
 
 # Draw retinal layers
 layers = [
@@ -119,12 +127,13 @@ ax3.text(5, 0.3, 'Neural Output', ha='center', fontweight='bold', color='darkblu
 ax3.set_xticks([])
 ax3.set_yticks([])
 ax3.axis('off')
+save_and_close("03_photoreceptor_network_structure")
 
-# 4. System Architecture (Second Row Right)
-ax4 = fig.add_subplot(gs[1, 1])
+# 4. System Architecture
+fig, ax4 = plt.subplots(figsize=(12, 8))
 ax4.set_xlim(0, 12)
 ax4.set_ylim(0, 10)
-ax4.set_title('Bio-LiFi System Architecture', fontweight='bold', fontsize=12)
+ax4.set_title('Bio-LiFi System Architecture', fontweight='bold', fontsize=14)
 
 # Transmitter side
 tx_box = FancyBboxPatch((0.5, 7), 3, 1.5, boxstyle="round,pad=0.1", 
@@ -168,12 +177,13 @@ for arrow in conn_arrows:
 ax4.set_xticks([])
 ax4.set_yticks([])
 ax4.axis('off')
+save_and_close("04_system_architecture")
 
-# 5. Signal Transduction Pathway (Third Row Left)
-ax5 = fig.add_subplot(gs[2, 0])
+# 5. Signal Transduction Pathway
+fig, ax5 = plt.subplots(figsize=(10, 10))
 ax5.set_xlim(0, 10)
 ax5.set_ylim(0, 12)
-ax5.set_title('Signal Transduction Timeline', fontweight='bold', fontsize=12)
+ax5.set_title('Signal Transduction Timeline', fontweight='bold', fontsize=14)
 
 # Timeline steps
 steps = [
@@ -208,9 +218,10 @@ ax5.text(-0.5, 6, 'Time →', rotation=90, ha='center', va='center', fontweight=
 ax5.set_xticks([])
 ax5.set_yticks([])
 ax5.axis('off')
+save_and_close("05_signal_transduction_timeline")
 
-# 6. Event-Driven Communication (Third Row Right)
-ax6 = fig.add_subplot(gs[2, 1])
+# 6. Event-Driven Communication
+fig, ax6 = plt.subplots(figsize=(12, 6))
 t = np.linspace(0, 10, 1000)
 # Generate spike train data
 spike_times = [1, 1.5, 2.8, 3.2, 4.5, 5.1, 6.7, 7.2, 8.8, 9.5]
@@ -223,7 +234,7 @@ ax6.plot(t, spike_signal, 'b-', linewidth=2, label='Bioluminescent Pulses')
 ax6.fill_between(t, 0, spike_signal, alpha=0.3, color='blue')
 ax6.set_xlabel('Time (seconds)')
 ax6.set_ylabel('Signal Intensity')
-ax6.set_title('Event-Driven Bio-LiFi Communication', fontweight='bold', fontsize=12)
+ax6.set_title('Event-Driven Bio-LiFi Communication', fontweight='bold', fontsize=14)
 ax6.set_ylim(-0.1, 1.2)
 ax6.grid(True, alpha=0.3)
 ax6.legend()
@@ -231,9 +242,10 @@ ax6.legend()
 # Add data encoding annotation
 ax6.text(2, 1.1, 'Data: 101101', bbox=dict(boxstyle='round', facecolor='yellow', alpha=0.7),
          fontweight='bold', ha='center')
+save_and_close("06_event_driven_communication")
 
-# 7. Environmental Sensitivity (Fourth Row Left)
-ax7 = fig.add_subplot(gs[3, 0])
+# 7. Environmental Sensitivity
+fig, ax7 = plt.subplots(figsize=(12, 6))
 temp_range = np.linspace(15, 35, 100)
 intensity_temp = 100 * np.exp(-((temp_range - 25)**2) / (2 * 5**2))  # Gaussian around 25°C
 
@@ -247,7 +259,7 @@ ax7_twin.plot(salinity_range, intensity_sal, 'b-', linewidth=3, label='Salinity 
 ax7.set_xlabel('Temperature (°C)')
 ax7.set_ylabel('Intensity (%) - Temperature', color='red')
 ax7_twin.set_ylabel('Intensity (%) - Salinity', color='blue')
-ax7.set_title('Environmental Effects on Bioluminescence', fontweight='bold', fontsize=12)
+ax7.set_title('Environmental Effects on Bioluminescence', fontweight='bold', fontsize=14)
 ax7.grid(True, alpha=0.3)
 
 # Color the y-axis labels
@@ -257,12 +269,13 @@ ax7_twin.tick_params(axis='y', labelcolor='blue')
 # Add optimal zones
 ax7.axvspan(20, 30, alpha=0.2, color='red', label='Optimal Temp Range')
 ax7_twin.axvspan(30, 40, alpha=0.2, color='blue', label='Optimal Salinity Range')
+save_and_close("07_environmental_sensitivity")
 
-# 8. Protocol Stack (Fourth Row Right)
-ax8 = fig.add_subplot(gs[3, 1])
+# 8. Protocol Stack
+fig, ax8 = plt.subplots(figsize=(10, 8))
 ax8.set_xlim(0, 10)
 ax8.set_ylim(0, 10)
-ax8.set_title('Bio-Native Protocol Stack', fontweight='bold', fontsize=12)
+ax8.set_title('Bio-Native Protocol Stack', fontweight='bold', fontsize=14)
 
 stack_layers = [
     ('Application Layer', 8.5, 'lightblue', 'Bio-App Interface'),
@@ -278,7 +291,7 @@ for layer, y_pos, color, description in stack_layers:
                                facecolor=color, edgecolor='black', linewidth=2)
     ax8.add_patch(layer_rect)
     ax8.text(2, y_pos, layer, va='center', fontweight='bold')
-    ax8.text(7.5, y_pos, description, va='center', style='italic', fontsize=8)
+    ax8.text(7.5, y_pos, description, va='center', style='italic', fontsize=9)
 
 # Add data flow arrows
 for i in range(len(stack_layers)-1):
@@ -294,9 +307,10 @@ ax8.text(0.2, 5, 'Data\nFlow', ha='center', va='center', rotation=90,
 ax8.set_xticks([])
 ax8.set_yticks([])
 ax8.axis('off')
+save_and_close("08_protocol_stack")
 
-# 9. Synthetic Gene Circuit (Bottom Row - Full Width)
-ax9 = fig.add_subplot(gs[4, :])
+# 9. Synthetic Gene Circuit
+fig, ax9 = plt.subplots(figsize=(15, 8))
 ax9.set_xlim(0, 15)
 ax9.set_ylim(0, 8)
 ax9.set_title('Synthetic Gene Circuit for Bio-LiFi Control', fontweight='bold', fontsize=14)
@@ -363,7 +377,7 @@ for arrow in feedback_arrows:
 substrate_box = FancyBboxPatch((9.5, 3.8), 2, 0.8, boxstyle="round,pad=0.05", 
                               facecolor='lightcyan', edgecolor='cyan', linewidth=1)
 ax9.add_patch(substrate_box)
-ax9.text(10.5, 4.2, 'Luciferin\n(Substrate)', ha='center', va='center', fontsize=8)
+ax9.text(10.5, 4.2, 'Luciferin\n(Substrate)', ha='center', va='center', fontsize=9)
 
 substrate_arrow = FancyArrowPatch((10.5, 4.6), (10.5, 6), arrowstyle='->', 
                                  mutation_scale=15, color='cyan')
@@ -372,27 +386,17 @@ ax9.add_patch(substrate_arrow)
 ax9.set_xticks([])
 ax9.set_yticks([])
 ax9.axis('off')
+save_and_close("09_synthetic_gene_circuit")
 
-plt.tight_layout()
-plt.show()
-
-# Additional utility function for creating network diagrams
-def create_network_diagram():
-    """
-    Function to create biological network diagrams using networkx
-    (Note: networkx would need to be imported if available)
-    """
-    # This would be implemented with networkx for more complex network visualizations
-    pass
-
-print("Bio-LiFi Communication Systems Visualization Complete!")
-print("\nDiagram Types Generated:")
-print("1. Bioluminescent Control Mechanisms")
-print("2. Multi-Wavelength Transmission Channels")
-print("3. Retinal Photoreceptor Network Structure")
-print("4. System Architecture Overview")
-print("5. Signal Transduction Timeline")
-print("6. Event-Driven Communication Patterns")
-print("7. Environmental Sensitivity Analysis")
-print("8. Bio-Native Protocol Stack")
-print("9. Synthetic Gene Circuit Design")
+print("\nBio-LiFi Communication Systems Visualization Complete!")
+print(f"\nAll PNG files saved to: {output_dir}/")
+print("\nGenerated files:")
+print("1. 01_bioluminescent_control_mechanisms.png")
+print("2. 02_multi_wavelength_channels.png")
+print("3. 03_photoreceptor_network_structure.png")
+print("4. 04_system_architecture.png")
+print("5. 05_signal_transduction_timeline.png")
+print("6. 06_event_driven_communication.png")
+print("7. 07_environmental_sensitivity.png")
+print("8. 08_protocol_stack.png")
+print("9. 09_synthetic_gene_circuit.png")
